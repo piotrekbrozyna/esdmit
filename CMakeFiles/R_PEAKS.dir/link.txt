@@ -1,0 +1,2 @@
+/usr/bin/ar cr ../../build/libR_PEAKS.a  CMakeFiles/R_PEAKS.dir/r_peaks_hard_coded_data.cpp.o CMakeFiles/R_PEAKS.dir/R_PEAKS_PanTompkins.cpp.o CMakeFiles/R_PEAKS.dir/R_PEAKS_Hilbert.cpp.o CMakeFiles/R_PEAKS.dir/R_PEAKS_EMD.cpp.o CMakeFiles/R_PEAKS.dir/R_PEAKS_Tools.cpp.o CMakeFiles/R_PEAKS.dir/R_PEAKS_automoc.cpp.o
+/usr/bin/ranlib ../../build/libR_PEAKS.a
