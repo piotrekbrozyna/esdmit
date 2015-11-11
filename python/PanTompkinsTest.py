@@ -1,0 +1,2 @@
+class PanTompkinsTest(Class):
+    pass
