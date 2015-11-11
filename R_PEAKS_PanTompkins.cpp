@@ -10,6 +10,8 @@ void PanTompkins::process(std::vector<float> const & ecgData, std::vector<unsign
     std::vector<float> kernel = { -0.125, -0.250, 0, 0.250, 0.125 };
 
     std::vector<float> y(ecgData.size() + kernel.size() - 1);
+    
+    m_tools.writeVectorToFile(ecgData, "PanTompkinsInput.csv");
 
     // derivation
     m_tools.convolve(ecgData, kernel, y);
@@ -32,7 +34,7 @@ void PanTompkins::process(std::vector<float> const & ecgData, std::vector<unsign
     std::vector<float> y3(y1.begin() + (dl / 2), y1.end() - (dl / 2) - dl % 2);
 
     threshold(ecgData, y3, samplingFrequency, output);
-
+    m_tools.writeVectorToFile(output, "PanTompkinsOutput.csv");
     //m_tools.adjust(output, ecgData, samplingFrequency);
 }
 
