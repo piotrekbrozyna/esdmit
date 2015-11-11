@@ -1,6 +1,10 @@
 #include "R_PEAKS_Tools.h"
 
 #include <algorithm>
+#include <fstream>
+#include <iostream>
+
+using namespace std;
 
 void Tools::convolve(const std::vector<float>& signal, const std::vector<float>& kernel, std::vector<float>& result) const
 {
@@ -92,4 +96,30 @@ void Tools::createTimeVec(std::vector<float>& time, float samplingFrequency, siz
 	{
 		time.push_back(i/samplingFrequency);
 	}
+}
+
+void Tools::writeVectorToFile(std::vector<unsigned int> vec, char * path) const
+{
+
+	fstream file(path, ios::out);
+	
+	for (size_t i = 0; i < vec.size(); ++i)
+	{
+		file << "'" << vec[i] << "'" << endl;		
+		
+	}
+
+}
+
+void Tools::writeVectorToFile(std::vector<float> vec, char * path) const 
+{
+
+	fstream file(path, ios::out);
+	
+	for (size_t i = 0; i < vec.size(); ++i)
+	{
+	      file << "'" << vec[i] << "'" << endl;
+
+	}
+
 }
