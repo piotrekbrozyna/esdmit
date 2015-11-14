@@ -114,16 +114,13 @@ void PanTompkins::threshold(std::vector<float> const & ecgData, std::vector<floa
         {
             pos = std::max_element(ecgData.begin() + fidualMark[i] - n, ecgData.begin() + fidualMark[i] + n) - ecgData.begin();
         }
-        else
+        else if(i == 0)
         {
-            if(i == 0)
-            {
-                pos = std::max_element(ecgData.begin(), ecgData.begin() + fidualMark[i] + n) - ecgData.begin();
-            }
-            else if(fidualMark[i] + n > ecgData.size())
-            {
-                pos = std::max_element(ecgData.begin() + fidualMark[i] - n, ecgData.end()) - ecgData.begin();
-            }
+            pos = std::max_element(ecgData.begin(), ecgData.begin() + fidualMark[i] + n) - ecgData.begin();
+        }
+        else if(fidualMark[i] + n > ecgData.size())
+        {
+            pos = std::max_element(ecgData.begin() + fidualMark[i] - n, ecgData.end()) - ecgData.begin();
         }
 
         if (output.size() > 8)
@@ -155,19 +152,18 @@ void PanTompkins::threshold(std::vector<float> const & ecgData, std::vector<floa
                 if((fidualMarkTmp > n) && (fidualMarkTmp + n < ecgData.size()))
                 {
                     posTmp = std::max_element(ecgData.begin() + fidualMarkTmp - n, ecgData.begin() + fidualMarkTmp + n) - (ecgData.begin() + fidualMarkTmp - n);
+                    // WTF no. 2
                     posTmp = fidualMarkTmp - n + posTmp;
                 }
-                else
+                else if(i == 0)
                 {
-                    if(i == 0)
-                    {
-                        posTmp = std::max_element(ecgData.begin(), ecgData.begin() + fidualMarkTmp + n) - ecgData.begin();
-                    }
-                    else if(fidualMarkTmp + n > ecgData.size())
-                    {
-                        posTmp = std::max_element(ecgData.begin() + fidualMarkTmp - n, ecgData.end()) - (ecgData.begin() + fidualMarkTmp - n);
-                        posTmp = fidualMarkTmp - n  + posTmp;
-                    }
+                    posTmp = std::max_element(ecgData.begin(), ecgData.begin() + fidualMarkTmp + n) - ecgData.begin();
+                }
+                else if(fidualMarkTmp + n > ecgData.size())
+                {
+                    posTmp = std::max_element(ecgData.begin() + fidualMarkTmp - n, ecgData.end()) - (ecgData.begin() + fidualMarkTmp - n);
+                    // WTF no. 3
+                    posTmp = fidualMarkTmp - n  + posTmp;
                 }
 
                 if(signal[fidualMarkTmp] > thi2)

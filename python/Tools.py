@@ -1,4 +1,5 @@
-import numpy
+import numpy as np
+import math
 
 class Tools(object):
 
@@ -9,14 +10,9 @@ class Tools(object):
 
     @staticmethod
     def integrateInMovingWindow(signal, samplingFrequency, tIntegrationWindow):
-        nIntegrationWindow = tIntegrationWindow * samplingFrequency
+        nIntegrationWindow = int(math.floor(tIntegrationWindow * samplingFrequency))
         kernel = [1.0 / nIntegrationWindow] * nIntegrationWindow
-        return numpy.convlove(signal, kernel, mode='full')
-
-    @staticmethod
-    def integrateInMovingWindow(signal, nIntegrationWindow):
-        kernel = [1.0 / nIntegrationWindow] * nIntegrationWindow
-        return numpy.convlove(signal, kernel, mode='full')
+        return np.convolve(signal, kernel, mode='same')
 
     @staticmethod
     def findMaximumWithinNeigborhood(signal, pointIndex, radius):
@@ -31,4 +27,4 @@ class Tools(object):
         elif (pointIndex + radius) > signalSize:
             start = pointIndex - radius
             end = signalSize
-        return numpy.amax(signal[start:end])
+        return start + np.argmax(signal[start:end])
