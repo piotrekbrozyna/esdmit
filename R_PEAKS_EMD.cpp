@@ -8,7 +8,7 @@
 
 void EMD::process(std::vector<float> const & ecgData, std::vector<unsigned int>& output, float samplingFrequency) const
 {
-    m_tools.writeVectorToFile(ecgData, "EMDInput.csv");
+    m_tools.writeVectorToFile(ecgData, "EMDInput.csv", true);
     gsl_vector* ekg = gsl_vector_alloc(ecgData.size());
     for (int i = 0; i < ecgData.size(); i++)
     {
@@ -27,7 +27,7 @@ void EMD::process(std::vector<float> const & ecgData, std::vector<unsigned int>&
     }
 
     Hilbert().process_on_imf(ecgData, imf, output, samplingFrequency);
-    m_tools.writeVectorToFile(output, "EMDOutput.csv");
+    m_tools.writeVectorToFile(output, "EMDOutput.csv", true);
 }
 
 void EMD::process(const gsl_vector* x, gsl_vector* imf) const
