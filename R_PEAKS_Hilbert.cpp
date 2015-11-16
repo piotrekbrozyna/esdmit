@@ -14,10 +14,14 @@ void Hilbert::process(std::vector<float> const & ecgData,
     std::vector<float> kernel = { -0.125, -0.250, 0, 0.250, 0.125 };
     std::vector<float> y(ecgData.size() + kernel.size() - 1);
     std::vector<float> y2;
+<<<<<<< HEAD
     
     m_tools.writeVectorToFile(ecgData, "HilbertInput.csv");
 
     // differentiation
+=======
+    m_tools.writeVectorToFile(ecgData, "HilbertInput.csv", true);
+>>>>>>> 74686fd831846ca8e7cda55212372427b6dc793b
     m_tools.convolve(ecgData, kernel, y);
     y = std::vector<float>(y.begin()+2,y.end()-2);
 
@@ -56,8 +60,7 @@ void Hilbert::process(std::vector<float> const & ecgData,
         }
     }
 
-    m_tools.writeVectorToFile(output, "HilbertOutput.csv");
-
+    m_tools.writeVectorToFile(output, "HilbertOutput.csv", true);
 }
 
 void Hilbert::process_on_imf(std::vector<float> const & ecgData, std::vector<float>& imf,

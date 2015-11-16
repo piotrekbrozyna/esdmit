@@ -54,6 +54,7 @@ class PanTompkins(object):
         self.iSignal = (Tools.integrateInMovingWindow(sSignal, self.samplingFrequency, self.tIntegrationWindow))[1:-3]
         lengthDiff = len(self.iSignal) - len(self.ecgSignal)
         self.detectRPeaks()
+        print self.rPeaks
         return self.rPeaks
 
     def differentiateEcgSignal(self):
@@ -67,8 +68,8 @@ class PanTompkins(object):
 
     def threshold(self):
         skip = False
+        print self.fiducialMarks
         for mark in self.fiducialMarks:
-            print mark
             pos = Tools.findMaximumWithinNeigborhood(self.ecgSignal, mark, self.nThRadius)
             if len(self.rPeaks) >= PanTompkins.RR_SIZE:
                 self.calculateAvarageRR()
@@ -80,7 +81,6 @@ class PanTompkins(object):
                     self.searchBack(mark)
 
             if (self.iSignal[mark] >= self.thresholdi1):
-                print "CASE 1"
                 if len(self.rPeaks) > 2 and self.possibleTWave(mark):
                     if self.comparePeakSlopes(mark):
                         self.updateNoiseApproximations(mark, pos)
@@ -95,7 +95,6 @@ class PanTompkins(object):
                     self.updateIntegratedSignalMaximumApproximation(mark)
 
             elif (self.thresholdi2 <= self.iSignal[mark] and self.iSignal[mark] < self.thresholdi1) or (self.iSignal[mark] < self.thresholdi2):
-                print "CASE 2"
                 self.updateNoiseApproximations(mark, pos)
 
             self.updateThresholds()
@@ -152,12 +151,13 @@ class PanTompkins(object):
         return abs(slope1) <= 0.5 * abs(slope2)
 
     def initializeThresholds(self):
-        self.spki = np.amax(self.iSignal[:2*self.samplingFrequency]) / 3.0
-        self.npki = sum(self.iSignal[:2*self.samplingFrequency]) / (2*self.samplingFrequency*2.0)
+        endIndex = 2 * self.samplingFrequency
+        self.spki = np.amax(self.iSignal[:endIndex]) / 3.0
+        self.npki = sum(self.iSignal[:endIndex]) / (endIndex * 2.0)
         self.thresholdi1 = self.spki
         self.thresholdi2 = self.npki
-        self.spkf = np.amax(self.ecgSignal[:2*self.samplingFrequency]) / 3.0
-        self.npkf = sum(self.ecgSignal[:2*self.samplingFrequency]) / (2*self.samplingFrequency*2.0)
+        self.spkf = np.amax(self.ecgSignal[:endIndex]) / 3.0
+        self.npkf = sum(self.ecgSignal[:endIndex]) / (endIndex * 2.0)
         self.thresholdf1 = self.spkf
         self.thresholdf2 = self.npkf
 
@@ -168,7 +168,7 @@ class PanTompkins(object):
         self.thresholdf2 = PanTompkins.THRESHOLDF_UPDATE_FACTOR_2 * self.thresholdf1
 
     def findFiducialMarks(self):
-        gSignal = np.convolve(self.iSignal, PanTompkins.GRADIENT_KERNEL, mode='full')
+        gSignal = np.convolve(self.iSignal, PanTompkins.GRADIENT_KERNEL, mode='same')
         for i in range(2, len(gSignal.tolist())):
             if gSignal[i-1] > 0 and gSignal[i] <= 0:
                 if self.fiducialMarks:

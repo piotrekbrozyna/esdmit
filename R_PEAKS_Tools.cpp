@@ -98,28 +98,40 @@ void Tools::createTimeVec(std::vector<float>& time, float samplingFrequency, siz
 	}
 }
 
-void Tools::writeVectorToFile(std::vector<unsigned int> vec, char * path) const
+void Tools::writeVectorToFile(std::vector<unsigned int> vec, char * path , bool newFile) const
 {
+	fstream file;
+	if(newFile)
+	  file.open(path, ios::out);
+	else
+	  file.open(path, ios::out | ios_base::app);
 
-	fstream file(path, ios::out);
-	
+	  
 	for (size_t i = 0; i < vec.size(); ++i)
 	{
-		file << "'" << vec[i] << "'" << endl;		
+		file <<  vec[i] << ",";		
 		
 	}
+	file << endl;
+	file.close();
 
 }
 
-void Tools::writeVectorToFile(std::vector<float> vec, char * path) const 
+void Tools::writeVectorToFile(std::vector<float> vec, char * path, bool newFile) const 
 {
+	fstream file;
+	if(newFile)
+	  file.open(path, ios::out);
+	else
+	  file.open(path, ios::out | ios_base::app);
 
-	fstream file(path, ios::out);
 	
 	for (size_t i = 0; i < vec.size(); ++i)
 	{
-	      file << "'" << vec[i] << "'" << endl;
+	      file <<  vec[i] << ",";
 
 	}
+	file << endl;
+	file.close();
 
 }
