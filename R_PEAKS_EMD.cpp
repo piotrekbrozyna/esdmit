@@ -48,9 +48,9 @@ void EMD::process(const gsl_vector* x, gsl_vector* imf) const
     gsl_interp_accel* acc_max;
     gsl_spline* spline_max;
 
-    //std::wcout << "Length of EKG signal: " << length << endl;
+    std::wcout << "Length of EKG signal: " << length << endl;
     int max_parts = ceil(length / 1000.0);
-    //std::wcout << "Number of parts: " << max_parts << endl;
+    std::wcout << "Number of parts: " << max_parts << endl;
 
     unsigned int prog;
 
@@ -60,7 +60,9 @@ void EMD::process(const gsl_vector* x, gsl_vector* imf) const
             N = length - p;
         else
             N = 1000;
-
+        if(N==0)
+            continue;
+        //std::cout << N << endl;
         gsl_vector* x_part = gsl_vector_alloc(N);
         for (i = 0; i < N; ++i)
         {

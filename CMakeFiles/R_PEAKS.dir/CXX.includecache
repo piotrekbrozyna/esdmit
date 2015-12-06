@@ -26,20 +26,6 @@ gsl/gsl_spline.h
 gsl/gsl_vector.h
 -
 
-/home/piotrek/Desktop/projekt/projekt/src/R_PEAKS/R_PEAKS_Hilbert.cpp
-R_PEAKS_Hilbert.h
-/home/piotrek/Desktop/projekt/projekt/src/R_PEAKS/R_PEAKS_Hilbert.h
-cmath
--
-algorithm
--
-inttypes.h
--
-fftw3.h
--
-iostream
--
-
 /home/piotrek/Desktop/projekt/projekt/src/R_PEAKS/R_PEAKS_Hilbert.h
 R_PEAKS_IAlgorithm.h
 /home/piotrek/Desktop/projekt/projekt/src/R_PEAKS/R_PEAKS_IAlgorithm.h
@@ -49,18 +35,6 @@ vector
 -
 R_PEAKS_Tools.h
 /home/piotrek/Desktop/projekt/projekt/src/R_PEAKS/R_PEAKS_Tools.h
-
-/home/piotrek/Desktop/projekt/projekt/src/R_PEAKS/R_PEAKS_PanTompkins.cpp
-R_PEAKS_PanTompkins.h
-/home/piotrek/Desktop/projekt/projekt/src/R_PEAKS/R_PEAKS_PanTompkins.h
-cmath
--
-inttypes.h
--
-algorithm
--
-iostream
--
 
 /home/piotrek/Desktop/projekt/projekt/src/R_PEAKS/R_PEAKS_PanTompkins.h
 R_PEAKS_IAlgorithm.h
