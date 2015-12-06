@@ -8,7 +8,7 @@
 
 void EMD::process(std::vector<float> const & ecgData, std::vector<unsigned int>& output, float samplingFrequency) const
 {
-    m_tools.writeVectorToFile(ecgData, "EMDInput.csv", true);
+    //m_tools.writeVectorToFile(ecgData, "EMDInput.csv", true);
     gsl_vector* ekg = gsl_vector_alloc(ecgData.size());
     for (int i = 0; i < ecgData.size(); i++)
     {

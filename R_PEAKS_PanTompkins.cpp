@@ -11,7 +11,7 @@ void PanTompkins::process(std::vector<float> const & ecgData, std::vector<unsign
 
     std::vector<float> y(ecgData.size() + kernel.size() - 1);
     
-    m_tools.writeVectorToFile(ecgData, "PanTompkinsInput.csv", true);
+    m_tools.writeVectorToFile(ecgData, "Input.csv", true);
 
     // derivation
     m_tools.convolve(ecgData, kernel, y);
@@ -28,7 +28,7 @@ void PanTompkins::process(std::vector<float> const & ecgData, std::vector<unsign
 
     // integrating
     m_tools.convolve(y, kernel2, y1);
-    m_tools.writeVectorToFile(y1, "AdditionalData.csv", true);
+    //m_tools.writeVectorToFile(y1, "AdditionalData.csv", true);
 
     size_t dl = y1.size() - ecgData.size();
 
@@ -41,6 +41,7 @@ void PanTompkins::process(std::vector<float> const & ecgData, std::vector<unsign
 
 void PanTompkins::threshold(std::vector<float> const & ecgData, std::vector<float>& signal, float samplingFrequency, std::vector<unsigned int>& output) const
 {
+<<<<<<< HEAD
     std::vector<unsigned int> fidualMark;
     fidualMark.reserve(ecgData.size());
 
