@@ -2,7 +2,6 @@ import numpy as np
 from numpy import array
 import scipy.interpolate as spi
 import math
-from Tools import Tools
 from Hilbert import Hilbert
 
 class EMD(object):

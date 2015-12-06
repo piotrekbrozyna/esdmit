@@ -41,7 +41,6 @@ void PanTompkins::process(std::vector<float> const & ecgData, std::vector<unsign
 
 void PanTompkins::threshold(std::vector<float> const & ecgData, std::vector<float>& signal, float samplingFrequency, std::vector<unsigned int>& output) const
 {
-<<<<<<< HEAD
     std::vector<unsigned int> fidualMark;
     fidualMark.reserve(ecgData.size());
 

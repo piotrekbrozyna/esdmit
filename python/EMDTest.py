@@ -10,7 +10,6 @@ class EMDTest(unittest.TestCase):
         refNumStr = '101'
         refInFileDir = os.path.join(refDir, refNumStr, 'PanTompkinsInput.csv')
         refOutFileDir = os.path.join(refDir, refNumStr, 'PanTompkinsOutput.csv')
-        # refAdditionalFileDir = os.path.join(refDir, refNumStr, 'AdditionalData.csv')
         resOutFileDir = os.path.join(refDir, refNumStr, 'EMDResultsPython.csv')
 
         self.samplingFreq = 360.0
