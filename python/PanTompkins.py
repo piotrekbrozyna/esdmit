@@ -10,7 +10,7 @@ class PanTompkins(object):
     RR_SIZE = 8
 
     DIFF_KERNEL = [-0.125, -0.250, 0, 0.250, 0.125]
-    GRADIENT_KERNEL = [-1, 1]
+    GRADIENT_KERNEL = [-1.0, 1.0]
 
     SIGNAL_LOW_LIMIT = 0.0001
 
@@ -51,14 +51,15 @@ class PanTompkins(object):
     def process(self):
         dSignal = self.differentiateEcgSignal()
         sSignal = np.square(dSignal)
-        self.iSignal = (Tools.integrateInMovingWindow(sSignal, self.samplingFrequency, self.tIntegrationWindow))[1:-3]
+        self.iSignal = (Tools.integrateInMovingWindow(sSignal, self.samplingFrequency, self.tIntegrationWindow))
+        print self.iSignal[:100]
         lengthDiff = len(self.iSignal) - len(self.ecgSignal)
+        self.nSignal = list(self.iSignal)
         self.detectRPeaks()
-        print self.rPeaks
         return self.rPeaks
 
     def differentiateEcgSignal(self):
-        return np.convolve(self.ecgSignal, PanTompkins.DIFF_KERNEL, mode='full')
+        return np.convolve(self.ecgSignal, PanTompkins.DIFF_KERNEL, mode='same')
 
     def detectRPeaks(self):
         Tools.zeroIfUnderThreshold(self.iSignal, PanTompkins.SIGNAL_LOW_LIMIT)
@@ -68,7 +69,6 @@ class PanTompkins(object):
 
     def threshold(self):
         skip = False
-        print self.fiducialMarks
         for mark in self.fiducialMarks:
             pos = Tools.findMaximumWithinNeigborhood(self.ecgSignal, mark, self.nThRadius)
             if len(self.rPeaks) >= PanTompkins.RR_SIZE:
@@ -126,7 +126,7 @@ class PanTompkins(object):
         self.spki = PanTompkins.SPKI_UPDATE_FACTOR_1 * self.iSignal[iIndex] + PanTompkins.SPKI_UPDATE_FACTOR_2 * self.spki
 
     def searchBack(self, mark):
-        windowSamples = math.floor(0.2*self.samplingFrequency)
+        windowSamples = int(math.floor(0.2*self.samplingFrequency))
         fiducialMarkTmp = np.argmax(self.iSignal[(self.rPeaks[-1]+windowSamples):(mark-windowSamples)])
         posTmp = Tools.findMaximumWithinNeigborhood(self.ecgSignal, fiducialMarkTmp, self.nThRadius)
 
@@ -143,15 +143,16 @@ class PanTompkins(object):
         return (mark - self.rPeaks[-1]) <= math.ceil(PanTompkins.T_WAVE_DETECTION_RR_HIGH_LIMIT * self.samplingFrequency)
 
     def comparePeakSlopes(self, mark):
-        vector1 = self.iSignal[(mark-4):(mark-3)] + self.iSignal[(mark-1):mark]
-        vector2 = self.rPeaks[-5:-4] + self.rPeaks[-2:-1]
-        kernel = [-2, -1, 1, 2]
-        slope1 = np.multiply(vector1, kernel)
-        slope2 = np.multiply(vector2, kernel)
+        vector1 = [self.iSignal[mark-4], self.iSignal[mark-3], self.iSignal[mark-1], self.iSignal[mark]]
+        last = self.rPeaks[-1]
+        vector2 = [self.iSignal[last-4], self.iSignal[last-3], self.iSignal[last-1], self.iSignal[last]]
+        kernel = [-1, -2, 2, 1]
+        slope1 = np.dot(vector1, kernel)
+        slope2 = np.dot(vector2, kernel)
         return abs(slope1) <= 0.5 * abs(slope2)
 
     def initializeThresholds(self):
-        endIndex = 2 * self.samplingFrequency
+        endIndex = int(2 * self.samplingFrequency)
         self.spki = np.amax(self.iSignal[:endIndex]) / 3.0
         self.npki = sum(self.iSignal[:endIndex]) / (endIndex * 2.0)
         self.thresholdi1 = self.spki
@@ -174,8 +175,13 @@ class PanTompkins(object):
                 if self.fiducialMarks:
                     if (i - self.fiducialMarks[-1]) >= math.ceil(0.2 * self.samplingFrequency):
                         self.fiducialMarks.append(i)
+                        # if i == 17332:
+                        #     print gSignal[i]
+                        #     print gSignal[i-1]
+                        #     print 'new'
                     elif self.iSignal[i] >= self.iSignal[self.fiducialMarks[-1]]:
-                        self.fiducialMarks[-1] = i
+                        self.fiducialMarks.pop()
+                        self.fiducialMarks.append(i)
                 else:
                     self.fiducialMarks.append(i)
 
