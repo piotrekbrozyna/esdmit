@@ -14,7 +14,7 @@ void Hilbert::process(std::vector<float> const & ecgData,
     std::vector<float> kernel = { -0.125, -0.250, 0, 0.250, 0.125 };
     std::vector<float> y(ecgData.size() + kernel.size() - 1);
     std::vector<float> y2;
-    m_tools.writeVectorToFile(ecgData, "HilbertInput.csv", true);
+    //m_tools.writeVectorToFile(ecgData, "HilbertInput.csv", true);
     m_tools.convolve(ecgData, kernel, y);
     y = std::vector<float>(y.begin()+2,y.end()-2);
     //std::vector<float> time;

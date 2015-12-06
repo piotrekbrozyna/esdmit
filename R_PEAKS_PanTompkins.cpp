@@ -11,7 +11,7 @@ void PanTompkins::process(std::vector<float> const & ecgData, std::vector<unsign
 
     std::vector<float> y(ecgData.size() + kernel.size() - 1);
     
-    m_tools.writeVectorToFile(ecgData, "PanTompkinsInput.csv", true);
+    m_tools.writeVectorToFile(ecgData, "Input.csv", true);
 
     m_tools.convolve(ecgData, kernel, y);
 
@@ -26,7 +26,7 @@ void PanTompkins::process(std::vector<float> const & ecgData, std::vector<unsign
     std::vector<float> y1(y.size() + kernel2.size() - 1);
 
     m_tools.convolve(y, kernel2, y1);
-    m_tools.writeVectorToFile(y1, "AdditionalData.csv", true);
+    //m_tools.writeVectorToFile(y1, "AdditionalData.csv", true);
 
     size_t dl = y1.size() - ecgData.size();
 
@@ -208,9 +208,9 @@ void PanTompkins::threshold(std::vector<float> const & ecgData, std::vector<floa
 		    skip = false;
 		    
 	}
-	m_tools.writeVectorToFile(fidualMark, "AdditionalData.csv", false);
-	std::vector<float> finalThreshold = { thi1, thi2, thf1, thf2 };
-	std::vector<float> cos= { spki, spkf, npki, npkf };
-	m_tools.writeVectorToFile(finalThreshold, "AdditionalData.csv", false);
-	m_tools.writeVectorToFile(cos, "AdditionalData.csv", false);
+        //m_tools.writeVectorToFile(fidualMark, "AdditionalData.csv", false);
+        //std::vector<float> finalThreshold = { thi1, thi2, thf1, thf2 };
+        //std::vector<float> cos= { spki, spkf, npki, npkf };
+        //m_tools.writeVectorToFile(finalThreshold, "AdditionalData.csv", false);
+        //m_tools.writeVectorToFile(cos, "AdditionalData.csv", false);
 }
