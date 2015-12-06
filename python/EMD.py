@@ -8,7 +8,7 @@ class EMD(object):
 
     SD_FACTOR = 0.3
 
-    def __init__(self, ecgSignal, samplingFrequency=360.0, imfsNo=3):
+    def __init__(self, ecgSignal, samplingFrequency=360.0, imfsNo=1):
         self.ecgSignal = array(ecgSignal)
         self.ecgSignalSize = len(ecgSignal)
         self.samplingFrequency = samplingFrequency
@@ -18,15 +18,12 @@ class EMD(object):
     def process(self):
         self.imfs = self.findIMFs(self.imfsNo)
         self.hilbertAlgorithm = Hilbert(np.sum(self.imfs, axis=0), self.samplingFrequency)
-        # self.hilbertAlgorithm = Hilbert(self.imfs, self.samplingFrequency)
         self.rPeaks = self.hilbertAlgorithm.process()
         return self.rPeaks
 
     def findIMFs(self, n=3):
         part_size = 1000
         max_parts = int(math.ceil(float(self.ecgSignalSize) / float(part_size)))
-        # imfs = np.array([[],[],[]])
-        # imfs = np.array([])
         imfs = [[] for x in xrange(n)]
 
         for p in range(0, max_parts * part_size, part_size):
@@ -78,7 +75,6 @@ class EMD(object):
                 c = np.subtract(c, h)
 
             imfs = np.append(imfs, imfs_parts, axis=1)
-            # self.imfs = np.append(self.imfs, imfs_parts)
 
         return imfs
 

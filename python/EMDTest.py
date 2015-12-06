@@ -1,5 +1,4 @@
 from EMD import EMD
-import numpy as np
 import unittest
 import os
 
@@ -8,8 +7,8 @@ class EMDTest(unittest.TestCase):
     def setUp(self):
         refDir = os.path.dirname(os.getcwd())
         refNumStr = '101'
-        refInFileDir = os.path.join(refDir, refNumStr, 'PanTompkinsInput.csv')
-        refOutFileDir = os.path.join(refDir, refNumStr, 'PanTompkinsOutput.csv')
+        refInFileDir = os.path.join(refDir, refNumStr, 'Input.csv')
+        refOutFileDir = os.path.join(refDir, refNumStr, 'EMDOutput.csv')
         resOutFileDir = os.path.join(refDir, refNumStr, 'EMDResultsPython.csv')
 
         self.samplingFreq = 360.0
@@ -17,7 +16,6 @@ class EMDTest(unittest.TestCase):
 
         self.refInFile = open(refInFileDir, 'r')
         self.refOutFile = open(refOutFileDir, 'r')
-        # self.refAdditionalFile = open(refAdditionalFileDir, 'r')
         self.resultFile = open(resOutFileDir, 'w')
         self.refInVector = []
         self.refOutVector = []
@@ -51,22 +49,20 @@ class EMDTest(unittest.TestCase):
             self.resultFile.write('%d\n' % val)
 
     def isResultIdentical(self):
-        refLength = len(self.refOutVector)
-        resLength = len(self.resultVector)
-
-        # self.assertTrue(refLength == resLength,
-        #                 'Lengths of reference vector ({}) and result vector ({}) are not equal'.format(refLength, resLength))
+        result = True
 
         for ref, res in zip(self.refOutVector, self.resultVector):
             print '{} {}'.format(ref, res)
-            # self.assertTrue(ref == res,
-            #                 'reference ({}) and result ({}) are not equal'.format(ref, res))
+            if ref != res:
+                print 'reference ({}) and result ({}) are not equal'.format(ref, res)
+                result = False
+
+        return result
 
     def testAlgorithm(self):
         self.loadReferenceData()
         self.runAlgorithm()
 
-        # self.comapareOtherValues()
         self.assertTrue(self.isResultIdentical(), 'Reference vector and result vector are not identical')
 
 if __name__ == '__main__':

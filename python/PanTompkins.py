@@ -175,10 +175,6 @@ class PanTompkins(object):
                 if self.fiducialMarks:
                     if (i - self.fiducialMarks[-1]) >= math.ceil(0.2 * self.samplingFrequency):
                         self.fiducialMarks.append(i)
-                        # if i == 17332:
-                        #     print gSignal[i]
-                        #     print gSignal[i-1]
-                        #     print 'new'
                     elif self.iSignal[i] >= self.iSignal[self.fiducialMarks[-1]]:
                         self.fiducialMarks.pop()
                         self.fiducialMarks.append(i)

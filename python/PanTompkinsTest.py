@@ -8,16 +8,15 @@ class PanTompkinsTest(unittest.TestCase):
     def setUp(self):
         refDir = os.path.dirname(os.getcwd())
         refNumStr = '106'
-        refInFileDir = os.path.join(refDir, refNumStr, 'PanTompkinsInput.csv')
+        refInFileDir = os.path.join(refDir, refNumStr, 'Input.csv')
         refOutFileDir = os.path.join(refDir, refNumStr, 'PanTompkinsOutput.csv')
-        refAdditionalFileDir = os.path.join(refDir, refNumStr, 'AdditionalData.csv')
-        resOutFileDir = os.path.join(os.getcwd(), 'pan_tompkins_results_{}.csv'.format(refNumStr))
+        resOutFileDir = os.path.join(refDir, refNumStr, 'PanTompkinsResultsPython.csv')
 
         self.samplingFreq = 360.0
 
         self.refInFile = open(refInFileDir, 'r')
         self.refOutFile = open(refOutFileDir, 'r')
-        self.refAdditionalFile = open(refAdditionalFileDir, 'r')
+        # self.refAdditionalFile = open(refAdditionalFileDir, 'r')
         self.resultFile = open(resOutFileDir, 'w')
         self.refInVector = []
         self.refOutVector = []
@@ -28,7 +27,7 @@ class PanTompkinsTest(unittest.TestCase):
     def tearDown(self):
         self.refInFile.close()
         self.refOutFile.close()
-        self.refAdditionalFile.close()
+        # self.refAdditionalFile.close()
         self.resultFile.close()
 
     def loadReferenceData(self):
@@ -61,7 +60,6 @@ class PanTompkinsTest(unittest.TestCase):
             diff = ref - res
             if diff > 0.0000001:
                 print diff
-            # self.assertAlmostEqual(ref, res, delta=0.0000001)
 
         # 2nd line
         marksStr = self.refAdditionalFile.readline().split(',')
@@ -70,35 +68,25 @@ class PanTompkinsTest(unittest.TestCase):
             self.refMarksVector.append(int(float(item)))
 
         for ref, res in zip(self.refMarksVector, self.alg.fiducialMarks):
-            # print '{} - {}'.format(ref, res)
-            # if ref != res:
-            #     print (ref - res)
             self.assertEqual(ref, res)
         pass
 
     def isResultIdentical(self):
-        refLength = len(self.refOutVector)
-        resLength = len(self.resultVector)
-
-        # self.assertTrue(refLength == resLength,
-        #                 'Lengths of reference vector ({}) and result vector ({}) are not equal'.format(refLength, resLength))
+        result = True
 
         for ref, res in zip(self.refOutVector, self.resultVector):
             print '{} {}'.format(ref, res)
-            self.assertTrue(ref == res,
-                            'reference ({}) and result ({}) are not equal'.format(ref, res))
+            if ref != res:
+                print 'reference ({}) and result ({}) are not equal'.format(ref, res)
+                result = False
 
-        return self.refOutVector == self.resultVector
+        return result
 
     def testAlgorithm(self):
         self.loadReferenceData()
         self.runAlgorithm()
-        # print self.alg.thresholdf1
-        # print self.alg.thresholdf2
-        # print self.alg.thresholdi1
-        # print self.alg.thresholdi2
 
-        self.comapareOtherValues()
+        # self.comapareOtherValues()
         self.assertTrue(self.isResultIdentical(), 'Reference vector and result vector are not identical')
 
 if __name__ == '__main__':
