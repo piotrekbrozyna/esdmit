@@ -8,7 +8,7 @@
 
 void EMD::process(std::vector<float> const & ecgData, std::vector<unsigned int>& output, float samplingFrequency) const
 {
-    m_tools.writeVectorToFile(ecgData, "EMDInput.csv", true);
+    //m_tools.writeVectorToFile(ecgData, "EMDInput.csv", true);
     gsl_vector* ekg = gsl_vector_alloc(ecgData.size());
     for (int i = 0; i < ecgData.size(); i++)
     {
@@ -32,10 +32,8 @@ void EMD::process(std::vector<float> const & ecgData, std::vector<unsigned int>&
 
 void EMD::process(const gsl_vector* x, gsl_vector* imf) const
 {
-    //EMD ZAIMPLEMENTOWANY PRZEZ WAVES
-
     unsigned int length = x->size;
-    unsigned int i, j, k, tt, p, N;
+    unsigned int i, j, k, p, N;
     double SD; //standard deviation
     double eps = 0.0000001; //to avoid zero values
 
@@ -48,9 +46,9 @@ void EMD::process(const gsl_vector* x, gsl_vector* imf) const
     gsl_interp_accel* acc_max;
     gsl_spline* spline_max;
 
-    //std::wcout << "Length of EKG signal: " << length << endl;
+    std::wcout << "Length of EKG signal: " << length << endl;
     int max_parts = ceil(length / 1000.0);
-    //std::wcout << "Number of parts: " << max_parts << endl;
+    std::wcout << "Number of parts: " << max_parts << endl;
 
     unsigned int prog;
 
@@ -60,7 +58,9 @@ void EMD::process(const gsl_vector* x, gsl_vector* imf) const
             N = length - p;
         else
             N = 1000;
-
+        if(N==0)
+            continue;
+        //std::cout << N << endl;
         gsl_vector* x_part = gsl_vector_alloc(N);
         for (i = 0; i < N; ++i)
         {
@@ -78,21 +78,13 @@ void EMD::process(const gsl_vector* x, gsl_vector* imf) const
 
         //copy of the input signal
         gsl_vector_memcpy(c, x_part);
-        //loop to decompose the input signal into n successive IMFs
-        //for (j = 0; j < n; ++j)
-        //{  //loop on successive IMFs
-        //cout << "IMF number: " << j << endl << endl;
 
         //inner loop to find each imf
-        tt = 0;
         gsl_vector_memcpy(h, c); // at the beginning of the sifting process, h is the signal
         SD = 1; //Standard deviation which will be used to stop the sifting process
 
         while (SD > 0.3)
         { // while the standard deviation is higher than 0.3 (typical value)
-
-            //std::wcout << "Iteration: " << tt << endl;
-            tt++;
 
             //find local max/min points
             maxmin.clear();
@@ -173,7 +165,6 @@ void EMD::process(const gsl_vector* x, gsl_vector* imf) const
 
             gsl_vector_div(prevh, prevh_temp);
             SD = sum(prevh);
-            //std::cout << "STANDARD DEVIATION: " << SD << endl << endl;
         }
 
         //store the extracted IMF in the matrix imf
@@ -193,7 +184,7 @@ void EMD::process(const gsl_vector* x, gsl_vector* imf) const
         }
 
         gsl_vector_sub(c, h);  //subtract the extracted IMF from the signal
-        //}
+
         gsl_vector_free(x_part);
         gsl_vector_free(h);
         gsl_vector_free(d);

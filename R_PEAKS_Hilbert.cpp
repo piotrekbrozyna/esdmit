@@ -14,21 +14,19 @@ void Hilbert::process(std::vector<float> const & ecgData,
     std::vector<float> kernel = { -0.125, -0.250, 0, 0.250, 0.125 };
     std::vector<float> y(ecgData.size() + kernel.size() - 1);
     std::vector<float> y2;
+
     m_tools.writeVectorToFile(ecgData, "HilbertInput.csv", true);
+    
+    // differentiation
     m_tools.convolve(ecgData, kernel, y);
     y = std::vector<float>(y.begin()+2,y.end()-2);
-    //std::vector<float> time;
-    //m_tools.createTimeVec(time, samplingFrequency, ecgData.size());
 
-    //std::cout << "here" << std::endl;
     y2.reserve(y.size());
     hilbert(y,y2);
-    //std::cout << "here2" << std::endl;
 
     for (size_t i = 0; i < y2.size(); ++i)
         y2[i] = sqrt(y[i]*y[i] + y2[i]*y2[i]);
 
-    //std::cout << "here3" << std::endl;
     size_t k = 5 * 60 * samplingFrequency;
     size_t size = ecgData.size();
 
@@ -36,8 +34,6 @@ void Hilbert::process(std::vector<float> const & ecgData,
     o.reserve(k);
     for (size_t i = 0; i < size; i += k)
     {
-        //std::cout << i << std::endl;
-       // std::cout << size << std::endl;
         o.clear();
         if (i + k >= size)
         {
@@ -45,11 +41,9 @@ void Hilbert::process(std::vector<float> const & ecgData,
                     std::vector<float> (ecgData.begin() + i, ecgData.end()),
                     std::vector<float> (y2.begin() + i, y2.end()),
                     samplingFrequency, o);
-            //std::cout << "here4" << std::endl;
         }
         else
         {
-            //std::cout << "here5" << std::endl;
             threshold(
                     std::vector<float> (ecgData.begin() + i, ecgData.begin() + i + k),
                     std::vector<float> (y2.begin() + i, y2.begin() + i + k),
@@ -61,14 +55,8 @@ void Hilbert::process(std::vector<float> const & ecgData,
             output.push_back(o[j] + i);
         }
     }
-    //std::cout << "here3" << std::endl;
 
-    //std::cout << "SIZEOUTPUT: " << output.size() << std::endl;
-    //std::cout << "SIZEECGDATA: " << ecgData.size() << std::endl;
-    //std::cout << "LAST ELEMENT" << output.back() << std::endl;
-    //std::cout << "FIRST ELEMENT" << output.front() << std::endl;
     m_tools.writeVectorToFile(output, "HilbertOutput.csv", true);
-
 }
 
 void Hilbert::process_on_imf(std::vector<float> const & ecgData, std::vector<float>& imf,
@@ -80,18 +68,13 @@ void Hilbert::process_on_imf(std::vector<float> const & ecgData, std::vector<flo
 
     m_tools.convolve(imf, kernel, y);
     y = std::vector<float>(y.begin()+2,y.end()-2);
-    //std::vector<float> time;
-    //m_tools.createTimeVec(time, samplingFrequency, ecgData.size());
 
-    //std::cout << "here" << std::endl;
     y2.reserve(y.size());
     hilbert(y,y2);
-    //std::cout << "here2" << std::endl;
 
     for (size_t i = 0; i < y2.size(); ++i)
         y2[i] = sqrt(y[i]*y[i] + y2[i]*y2[i]);
 
-    //std::cout << "here3" << std::endl;
     size_t k = 2 * 60 * samplingFrequency;
     size_t size = ecgData.size();
 
@@ -99,8 +82,6 @@ void Hilbert::process_on_imf(std::vector<float> const & ecgData, std::vector<flo
     o.reserve(k);
     for (size_t i = 0; i < size; i += k)
     {
-        //std::cout << i << std::endl;
-       // std::cout << size << std::endl;
         o.clear();
         if (i + k >= size)
         {
@@ -108,11 +89,9 @@ void Hilbert::process_on_imf(std::vector<float> const & ecgData, std::vector<flo
                     std::vector<float> (ecgData.begin() + i, ecgData.end()),
                     std::vector<float> (y2.begin() + i, y2.end()),
                     samplingFrequency, o);
-            //std::cout << "here4" << std::endl;
         }
         else
         {
-            //std::cout << "here5" << std::endl;
             threshold(
                     std::vector<float> (ecgData.begin() + i, ecgData.begin() + i + k),
                     std::vector<float> (y2.begin() + i, y2.begin() + i + k),
@@ -124,21 +103,10 @@ void Hilbert::process_on_imf(std::vector<float> const & ecgData, std::vector<flo
             output.push_back(o[j] + i);
         }
     }
-    //std::cout << "here3" << std::endl;
-
-    //std::cout << "SIZEOUTPUT: " << output.size() << std::endl;
-    //std::cout << "SIZEECGDATA: " << ecgData.size() << std::endl;
-    //std::cout << "LAST ELEMENT" << output.back() << std::endl;
-    //std::cout << "FIRST ELEMENT" << output.front() << std::endl;
-
-
 }
 
 void Hilbert::threshold(std::vector<float> ecgData, std::vector<float> y, float samplingFrequency, std::vector<unsigned int>& output) const
 {
-    // y = signal
-    // ecgData = ecg
-
     float max = *(std::max_element(y.begin(), y.begin()+5*samplingFrequency));
 
     float threshold = 0.8 * max;
