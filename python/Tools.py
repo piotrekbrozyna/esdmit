@@ -36,16 +36,8 @@ class Tools(object):
     @staticmethod
     def findMaximumWithinNeigborhood(signal, index, radius):
         signalSize = len(signal)
-        start = end = 0
-        if (index > radius) and (index + radius < signalSize):
-            start = index - radius
-            end = index + radius + 1
-        elif (index - radius) < 0:
-            start = 0
-            end = index + radius + 1
-        elif (index + radius) > signalSize:
-            start = index - radius
-            end = -1
+        start = 0 if (index - radius) < 0 else index - radius
+        end = -1 if (index + radius) >= signalSize else index + radius + 1
         return start + np.argmax(signal[start:end])
 
     @staticmethod
@@ -55,7 +47,6 @@ class Tools(object):
         for peak in peaks:
             newPos = Tools.findMaximumWithinNeigborhood(signal, peak, nRadius)
             adjustedPeaks.append(newPos)
-            print '{} - {}'.format(peak, newPos)
 
         return adjustedPeaks
 

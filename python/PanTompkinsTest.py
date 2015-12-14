@@ -7,7 +7,7 @@ class PanTompkinsTest(unittest.TestCase):
 
     def setUp(self):
         refDir = os.path.dirname(os.getcwd())
-        refNumStr = '106'
+        refNumStr = '100'
         refInFileDir = os.path.join(refDir, refNumStr, 'Input.csv')
         refOutFileDir = os.path.join(refDir, refNumStr, 'PanTompkinsOutput.csv')
         resOutFileDir = os.path.join(refDir, refNumStr, 'PanTompkinsResultsPython.csv')
