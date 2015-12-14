@@ -8,37 +8,42 @@ class Hilbert(object):
     DIFF_KERNEL = [-0.125, -0.250, 0, 0.250, 0.125]
     RR_SIZE = 8
 
-    def __init__(self, ecgSignal, samplingFrequency=360.0):
+    def __init__(self, ecgSignal, tWindowSize=300.0, samplingFrequency=360.0):
         self.ecgSignal = np.copy(ecgSignal)
-        print self.ecgSignal
-        print self.ecgSignal[:1000]
-        self.ecgSignalSize = ecgSignal.size
+        self.ecgSignalSize = len(ecgSignal)
         self.samplingFrequency = samplingFrequency
+        self.nWindowSize = int(tWindowSize * samplingFrequency)
         self.rPeaks = []
 
-    def process(self):
-        self.diffSignal = np.convolve(self.ecgSignal, Hilbert.DIFF_KERNEL, mode='same')
+    # signalForEnvelope can be e.g. sum o IMFs
+    def process(self, signalForEnvelope=None):
+
+        if signalForEnvelope is None:
+            signalForEnvelope = self.ecgSignal
+
+        self.diffSignal = np.convolve(signalForEnvelope,
+                                      Hilbert.DIFF_KERNEL,
+                                      mode='same')
         self.analyticalSignal = ss.hilbert(self.diffSignal)
         self.envelope = np.abs(self.analyticalSignal)
 
         startIndex = 0
-        intervalSize = int(300.0 * self.samplingFrequency)
+
         while startIndex < self.ecgSignalSize:
 
-            if startIndex + intervalSize >= self.ecgSignalSize:
+            if startIndex + self.nWindowSize >= self.ecgSignalSize:
                 output = self.doThresholding(self.ecgSignal[startIndex:],
                                              self.envelope[startIndex:])
             else:
-                output = self.doThresholding(self.ecgSignal[startIndex:(startIndex + intervalSize)],
-                                             self.envelope[startIndex:(startIndex + intervalSize)])
+                output = self.doThresholding(self.ecgSignal[startIndex:(startIndex + self.nWindowSize)],
+                                             self.envelope[startIndex:(startIndex + self.nWindowSize)])
 
             if output:
                 for item in output:
                     self.rPeaks.append(item + startIndex)
 
-            startIndex += intervalSize
+            startIndex += self.nWindowSize
 
-        print self.rPeaks
         return self.rPeaks
 
     def doThresholding(self, ecgInterval, envelopeInterval):
@@ -71,8 +76,9 @@ class Hilbert(object):
                 threshold = ((sum(tmpEcg) - np.amax(tmpEcg)) / 4.0) * 0.55
 
         if output[0] == 0:
-            del output[0]
+            output = np.delete(output, 0)
+            print output[0]
 
-        output = Tools.adjust(ecgInterval, output, self.samplingFrequency, 0.05)
+        output = Tools.adjust(ecgInterval, output, self.samplingFrequency, 0.5)
 
         return output
