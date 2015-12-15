@@ -1,6 +1,8 @@
 %% initialize varaible
-clear all;
-input = csvread('../100/Input.csv');
+%clear all;
+%input = csvread('../100/Input.csv');
+function [output, timeExecution] = Hilbert(input)
+tic
 samplingFrequency = 360;
 deartiveKernel = [ -0.125; -0.250; 0; 0.250; 0.125 ];
 
@@ -74,7 +76,7 @@ for i=1:k:size
    
     
 end
-
+timeExecution = toc;
 
 
 
