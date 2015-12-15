@@ -52,7 +52,6 @@ class PanTompkins(object):
         dSignal = self.differentiateEcgSignal()
         sSignal = np.square(dSignal)
         self.iSignal = (Tools.integrateInMovingWindow(sSignal, self.samplingFrequency, self.tIntegrationWindow))
-        print self.iSignal[:100]
         lengthDiff = len(self.iSignal) - len(self.ecgSignal)
         self.nSignal = list(self.iSignal)
         self.detectRPeaks()

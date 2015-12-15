@@ -6,7 +6,7 @@ class HilbertTest(unittest.TestCase):
 
     def setUp(self):
         refDir = os.path.dirname(os.getcwd())
-        refNumStr = '101'
+        refNumStr = '103'
         refInFileDir = os.path.join(refDir, refNumStr, 'Input.csv')
         refOutFileDir = os.path.join(refDir, refNumStr, 'HilbertOutput.csv')
         resOutFileDir = os.path.join(refDir, refNumStr, 'HilbertResultsPython.csv')
