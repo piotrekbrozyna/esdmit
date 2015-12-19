@@ -1,39 +1,73 @@
-function test_rpeaks(alg, test_no)
+function test_rpeaks(alg, lang, test_no)
 
 switch (alg)
-    case 'pan-tompkins'
-        ecg_filename = sprintf('../%d/PanTompkinsInput.csv', test_no);
+    case 'Pan-Tompkins'
         ref_rpeaks_filename = sprintf('../%d/PanTompkinsOutput.csv', test_no);
-        res_rpeaks_filename = sprintf('../%d/PanTompkinsResultsPython.csv', test_no);
-    case 'hilbert'
-        ecg_filename = sprintf('../%d/HilbertInput.csv', test_no);
+        res_rpeaks_filename = sprintf('../%d/PanTompkinsResults%s.csv', test_no, lang);
+    case 'Hilbert'
         ref_rpeaks_filename = sprintf('../%d/HilbertOutput.csv', test_no);
-        res_rpeaks_filename = sprintf('../%d/HilbertResultsPython.csv', test_no);
-    case 'emd'
-        ecg_filename = sprintf('../%d/PanTompkinsInput.csv', test_no);
-        ref_rpeaks_filename = sprintf('../%d/PanTompkinsOutput.csv', test_no);
-        res_rpeaks_filename = sprintf('../%d/EMDResultsPython.csv', test_no);
+        res_rpeaks_filename = sprintf('../%d/HilbertResults%s.csv', test_no, lang);
+    case 'EMD'
+        ref_rpeaks_filename = sprintf('../%d/EMDOutput.csv', test_no);
+        res_rpeaks_filename = sprintf('../%d/EMDResults%s.csv', test_no, lang);
 end
 
+ecg_filename = sprintf('../%d/Input.csv', test_no);
+
 ecg = csvread(ecg_filename);
-ref_rpeaks = csvread(ref_rpeaks_filename);
+f = 360.0;
+T = 1 / f;
+t_vec = 0:(size(ecg) - 1);
+t_vec = t_vec * T;
+
+ref_rpeaks = csvread(ref_rpeaks_filename)';
+ref_rpeaks = ref_rpeaks(1:(end-1));
 res_rpeaks = csvread(res_rpeaks_filename);
 
-ref_rpeaks = ref_rpeaks + ones(size(ref_rpeaks));
-res_rpeaks = res_rpeaks + ones(size(res_rpeaks));
+size(setdiff(ref_rpeaks, res_rpeaks), 1)
+% setdiff(ref_rpeaks, res_rpeaks)
+size(setdiff(res_rpeaks, ref_rpeaks), 1)
+% setdiff(res_rpeaks, ref_rpeaks)
+size(ref_rpeaks, 1)
+size(unique(res_rpeaks), 1)
 
-ref_rpeaks_val = ecg(ref_rpeaks);
-res_rpeaks_val = ecg(res_rpeaks);
+% ref_rpeaks = ref_rpeaks + ones(size(ref_rpeaks));
+% res_rpeaks = res_rpeaks + ones(size(res_rpeaks));
 
-plot(ecg, 'r');
+ref_rpeaks_val = ecg(ref_rpeaks + ones(size(ref_rpeaks)));
+res_rpeaks_val = ecg(res_rpeaks + ones(size(res_rpeaks)));
+
+figure('units','normalized','outerposition',[0 0 1 1])
+plot(t_vec, ecg, 'r');
 hold on;
-plot(ref_rpeaks, ref_rpeaks_val, 'bo');
-plot(res_rpeaks, res_rpeaks_val, 'm+');
+grid on;
+plot(ref_rpeaks * T, ref_rpeaks_val, 'go', 'LineWidth', 2);
+plot(res_rpeaks * T, res_rpeaks_val, 'b+', 'MarkerSize', 10, 'LineWidth', 1);
 
-title(sprintf('MIT-BIH Arythmia Database - signal no. %d', test_no));
-xlabel('sample');
-ylabel('voltage');
-legend('ECG', 'reference', 'python');
+title(sprintf('MIT-BIH Arythmia Database - sygna³ nr %d - algorytm %s', test_no, alg));
+xlabel('czas [s]');
+ylabel('napiêcie [mV]');
+legend('EKG', 'C++', 'Python');
+
+% window = 25000;
+% ref_rpeaks_indices = find(ref_rpeaks < window);
+% ref_rpeaks_window = ref_rpeaks(ref_rpeaks_indices);
+% ref_rpeaks_window_val = ecg(ref_rpeaks_window);
+% res_rpeaks_indices = find(res_rpeaks < window);
+% res_rpeaks_window = res_rpeaks(res_rpeaks_indices);
+% res_rpeaks_window_val = ecg(res_rpeaks_window);
+
+% figure
+% plot(t_vec(1:window), ecg(1:window), 'r');
+% hold on;
+% grid on;
+% plot(ref_rpeaks_window * T, ref_rpeaks_window_val, 'go');
+% plot(res_rpeaks_window * T, res_rpeaks_window_val, 'b+');
+% 
+% title(sprintf('MIT-BIH Arythmia Database - sygna³ nr %d - algorytm %s', test_no, alg));
+% xlabel('czas [s]');
+% ylabel('napiêcie [mV]');
+% legend('EKG', 'C++', lang);
 
 end
 

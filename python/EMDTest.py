@@ -1,6 +1,9 @@
 from EMD import EMD
+import cProfile
+import pstats
 import unittest
 import os
+import numpy as np
 
 class EMDTest(unittest.TestCase):
 
@@ -10,16 +13,18 @@ class EMDTest(unittest.TestCase):
         refInFileDir = os.path.join(refDir, refNumStr, 'Input.csv')
         refOutFileDir = os.path.join(refDir, refNumStr, 'EMDOutput.csv')
         resOutFileDir = os.path.join(refDir, refNumStr, 'EMDResultsPython.csv')
-        imfOutFileDir = os.path.join(refDir, refNumStr, 'Imf.csv')
+        self.imfOutFileDir = os.path.join(refDir, refNumStr, 'Imf.csv')
+        envOutFileDir = os.path.join(refDir, refNumStr, 'Envelope.csv')
 
         self.samplingFreq = 360.0
-        self.imfsNo = 1
+        self.imfsNo = 3
         self.tWindowSize = 120.0
 
         self.refInFile = open(refInFileDir, 'r')
         self.refOutFile = open(refOutFileDir, 'r')
         self.resultFile = open(resOutFileDir, 'w')
-        self.imfOutFileFile = open(imfOutFileDir, 'w')
+        # self.imfOutFileFile = open(imfOutFileDir, 'w')
+        self.envOutFileFile = open(envOutFileDir, 'w')
         self.refInVector = []
         self.refOutVector = []
         self.resultVector = []
@@ -30,7 +35,8 @@ class EMDTest(unittest.TestCase):
         self.refInFile.close()
         self.refOutFile.close()
         self.resultFile.close()
-        self.imfOutFileFile.close()
+        # self.imfOutFileFile.close()
+        self.envOutFileFile.close()
 
     def loadReferenceData(self):
         refInVectorStr = self.refInFile.readline().split(',')
@@ -51,19 +57,26 @@ class EMDTest(unittest.TestCase):
                        samplingFrequency=self.samplingFreq,
                        imfsNo=self.imfsNo)
         self.resultVector = self.alg.process()
-        self.imf = self.alg.imfs
+        self.env = self.alg.hilbertAlgorithm.envelope
+        self.imfs = self.alg.imfs
         # self.spline_upper = self.alg.spline_upper
 
         for val in self.resultVector or []:
             self.resultFile.write('%d\n' % val)
 
-        for val in self.imf[0]:
-            self.imfOutFileFile.write('%f\n' % val)
+        # for val in self.imf:
+        #     self.imfOutFileFile.write('%f\n' % val)
+        np.savetxt(self.imfOutFileDir, self.imfs, delimiter=',')
+
+        for val in self.env:
+            self.envOutFileFile.write('%f\n' % val)
 
     def isResultIdentical(self):
         result = True
 
         # self.assertTrue(len(self.resultVector) > 0)
+
+        print 'Output size: {}'.format(len(self.resultVector))
 
         for ref, res in zip(self.refOutVector, self.resultVector):
             # print '{} {}'.format(ref, res)
