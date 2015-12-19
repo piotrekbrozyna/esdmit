@@ -1,6 +1,7 @@
 %% initialize varaible
 %clear all;
-input = csvread('../100/Input.csv');
+function [output, timeExecution] = PanTompkins(input)
+tic
 samplingFrequency = 360;
 deartiveKernel = [ -0.125; -0.250; 0; 0.250; 0.125 ];
 lengthOfIntegrationWindow = floor(samplingFrequency*0.15);
@@ -135,4 +136,23 @@ for i=1:1:length(fidualMark)
     skip = false;
     
 end
+%output = adjust(input, output);
+timeExecution = toc;
+end
 
+function output = adjust(ecg, output)
+    for i=1:1:length(output)
+       startElem = output(i)-5;
+       endElem = output(i)+5;
+       for j=startElem:1:endElem
+          if(j<1)
+              continue;
+          elseif(j>length(ecg))
+              continue;
+          end
+          if(ecg(output(i))<ecg(j))
+              output(i)=j;
+          end
+       end       
+    end
+end

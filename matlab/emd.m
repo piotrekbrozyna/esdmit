@@ -1,15 +1,15 @@
-function output = emd()
-clear all;
-input = csvread('../104/Input.csv');
+function [output, executionTime] = EMD(input)
+% clear all;
+% input = csvread('../104/Input.csv');
+tic
 samplingFrequency = 360;
 input = transpose(input(:));
 inputLength = length(input);
 
 maxParts = ceil(inputLength/1000);
 imf = [];
-for j =1:1
+for j =1:3
     %tempImf = [];
-    j
 %     for i=0:1:maxParts-1
 %         beginPosition = i*1000+1;
 %         endPosition = (i+1)*1000;
@@ -33,7 +33,7 @@ for j =1:1
     imf{j} = x1;
 end
 
-imf = imf{1};
+imf = imf{1}+imf{2}+imf{3};
 
 deartiveKernel = [ -0.125; -0.250; 0; 0.250; 0.125 ];
 output = [];
@@ -46,9 +46,6 @@ hilbertSignal = sqrt(hilbertSignal.^2+derativedSignal(3:end-2).^2);
 
 k = 5*60*samplingFrequency;
 size = length(imf);
-length(imf)
-length(hilbertSignal)
-length(input)
 for i=1:k:size
    beginElem = i;
    endElem = i + k;
@@ -107,7 +104,7 @@ for i=1:k:size
     
 end
 
-
+executionTime=toc;
 end
 
 
