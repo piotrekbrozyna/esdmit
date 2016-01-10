@@ -154,9 +154,9 @@ function find_maximum(signal, index, radius)
 	signal_size = size(signal, 1)
 	start_index = (index - radius) < 1 ? 1 : (index - radius)
 	if index + radius > signal_size
-		return start_index + indmax(signal[start_index:end])
+		return start_index + indmax(signal[start_index:end])-1
 	else
-		return start_index + indmax(signal[start_index:(index + radius)])
+		return start_index + indmax(signal[start_index:(index + radius)])-1
 	end
 end
 
@@ -172,7 +172,7 @@ function possible_t_wave(r_peaks, mark, sampling_frequency)
 	return (mark - r_peaks[end]) <= ceil(T_WAVE_DETECTION_RR_HIGH_LIMIT * sampling_frequency)
 end
 
-ref_dir = dirname(pwd())
+ref_dir = "E:\\medyczny\\esdmit"
 ref_num_str = "100"
 ref_in_file_dir = joinpath(ref_dir, ref_num_str, "Input.csv")
 ref_out_file_dir = joinpath(ref_dir, ref_num_str, "PanTompkinsResultsJulia.csv")

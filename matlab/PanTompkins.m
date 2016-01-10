@@ -91,7 +91,7 @@ for i=1:1:length(fidualMark)
                 endMax = length(input);
             end
             [val, posTmp] = max(input(startMax:endMax));
-            posTmp = posTmp + startMax;
+            posTmp = posTmp + startMax-1;
             if(integratedSignal(posTmp) > thi2)
                if(input(posTmp)>thf2)
                   output = [output posTmp];

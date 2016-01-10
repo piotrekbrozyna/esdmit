@@ -44,7 +44,7 @@ hilbertSignal = abs(hilbert(derativedSignal(3:end-2)));
 
 hilbertSignal = sqrt(hilbertSignal.^2+derativedSignal(3:end-2).^2);
 
-k = 5*60*samplingFrequency;
+k = 2*60*samplingFrequency;
 size = length(imf);
 for i=1:k:size
    beginElem = i;
@@ -52,7 +52,7 @@ for i=1:k:size
    if(endElem > size)
        endElem = size;
    end
-   
+
    tempInput = imf(beginElem:endElem);
    tempHilbertSignal = hilbertSignal(beginElem:endElem);
 
