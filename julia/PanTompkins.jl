@@ -156,7 +156,7 @@ function find_maximum(signal, index, radius)
 	if index + radius > signal_size
 		return start_index + indmax(signal[start_index:end])-1
 	else
-		return start_index + indmax(signal[start_index:(index + radius)])
+		return start_index + indmax(signal[start_index:(index + radius)])-1
 	end
 end
 
