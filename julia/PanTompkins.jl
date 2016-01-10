@@ -54,7 +54,7 @@ function processPanTompkins(ecg_signal, sampling_frequency=360.0, t_int_window=0
 	end
 
 	# findFiducialMarks
-	gradient_signal = [integrated_signal[1], diff(integrated_signal)]
+	gradient_signal = [integrated_signal[1]; diff(integrated_signal)]
 	for i = 3:size(gradient_signal, 1)
 		if gradient_signal[i-1] > 0 && gradient_signal[i] <= 0
 			if size(fiducial_marks, 1) > 0
@@ -156,7 +156,7 @@ function find_maximum(signal, index, radius)
 	if index + radius > signal_size
 		return start_index + indmax(signal[start_index:end])-1
 	else
-		return start_index + indmax(signal[start_index:(index + radius)])-1
+		return start_index + indmax(signal[start_index:(index + radius)])
 	end
 end
 
